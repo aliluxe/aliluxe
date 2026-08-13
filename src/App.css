@@ -1,0 +1,14 @@
+.site-shell {
+  min-height: 100vh;
+}
+
+main {
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .product-card img {
+    height: 300px;
+  }
+}
+
