@@ -12,6 +12,8 @@ const navItems = [
 ]
 
 function Layout() {
+  const logoSrc = `${import.meta.env.BASE_URL}logo.png`
+
   return (
     <div className="site-shell">
       <header className="topbar">
@@ -28,7 +30,7 @@ function Layout() {
 
       <nav className="main-nav container" aria-label="Main navigation">
         <Link to="/" className="brand-mark" aria-label="ALI LUXE home page">
-          <img src="/logo.png" alt="ALI LUXE logo" />
+          <img src={logoSrc} alt="ALI LUXE logo" />
         </Link>
         <div className="nav-links">
           {navItems.map((item) => (
@@ -53,7 +55,7 @@ function Layout() {
         <div className="container footer-grid">
           <div>
             <div className="brand-mark brand-mark--footer">
-              <img src="/logo.png" alt="ALI LUXE logo" />
+              <img src={logoSrc} alt="ALI LUXE logo" />
             </div>
             <p className="footer-copy">Luxury beauty, fashion, and statement essentials curated for a modern world.</p>
           </div>
