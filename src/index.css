@@ -175,7 +175,7 @@ p { margin: 0; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 180px;
+  width: 140px;
 }
 
 .brand-mark img {
@@ -1163,6 +1163,7 @@ p { margin: 0; }
   }
   .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .newsletter-shell { flex-direction: column; align-items: flex-start; }
+  .brand-mark { width: 130px; }
 }
 
 @media (max-width: 700px) {
@@ -1198,7 +1199,7 @@ p { margin: 0; }
   .hero-copy h1 { font-size: 3rem; }
   .hero-card--main { inset: 0 0 90px 0; }
   .hero-card--mini { width: 190px; height: 170px; }
-  .brand-mark { width: 150px; }
+  .brand-mark { width: 100px; }
   .newsletter-form { border-radius: 26px; flex-direction: column; align-items: stretch; width: 100%; }
   .newsletter-form input { min-width: 0; width: 100%; }
   .newsletter-form button { width: 100%; }
