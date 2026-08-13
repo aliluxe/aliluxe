@@ -20,9 +20,26 @@ import TermsPage from './pages/TermsPage'
 import FaqPage from './pages/FaqPage'
 import { products, categories, collections } from './data/products'
 
+const getGitHubPagesFallbackRoute = () => {
+  if (typeof window === 'undefined') return null
+
+  const params = new URLSearchParams(window.location.search)
+  const redirectPath = params.get('p')
+
+  if (!redirectPath) return null
+
+  const normalizedPath = redirectPath.startsWith('/') ? redirectPath : `/${redirectPath}`
+  const targetUrl = `${import.meta.env.BASE_URL.replace(/\/$/, '')}${normalizedPath}`
+
+  window.history.replaceState(null, '', targetUrl)
+  return normalizedPath
+}
+
 function App() {
+  getGitHubPagesFallbackRoute()
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />

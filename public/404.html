@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ALI LUXE</title>
+    <script type="text/javascript">
+      const path = window.location.pathname;
+      const repoName = '/aliluxe';
+      const segment = path.startsWith(repoName) ? path.slice(repoName.length) : path;
+      const redirect = `${repoName}/?p=${encodeURIComponent(segment || '/')}`;
+      window.location.replace(redirect);
+    </script>
+  </head>
+  <body></body>
+</html>
