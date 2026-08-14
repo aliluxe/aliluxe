@@ -22,6 +22,20 @@ npm install
 npm run dev
 ```
 
+## Payment configuration
+
+This storefront includes a gateway-ready checkout and payment UI. No live payment credentials are committed to the repository.
+
+Create a local `.env` file (ignored by git) with the following variables:
+
+```bash
+VITE_PAYMENT_PROVIDER=stripe
+VITE_PAYMENT_PUBLISHABLE_KEY=pk_test_your_key_here
+VITE_PAYMENT_MODE=sandbox
+```
+
+When these values are present, the checkout can be connected to the configured provider securely. The frontend never stores raw card numbers or CVV/CVC data in localStorage or in the repository.
+
 ## Production build
 
 ```bash

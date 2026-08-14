@@ -1,14 +1,22 @@
 import { Link } from 'react-router-dom'
-
-const cartItems = [
-  { id: 1, name: 'Velvet Rose Serum', price: 64, qty: 1, image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=900&q=80' },
-  { id: 2, name: 'Aurelia Ring Set', price: 150, qty: 1, image: 'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=900&q=80' },
-]
+import { useCart } from '../context/CartContext'
+import { formatCurrency, getCartItemIdentifier } from '../utils/cart'
 
 function CartPage() {
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0)
-  const shipping = 18
-  const total = subtotal + shipping
+  const { cartItems, updateQuantity, removeItem, selectedCurrency, totals } = useCart()
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="container page-shell cart-page">
+        <div className="empty-cart">
+          <p className="eyebrow">Your bag</p>
+          <h1>Your bag is currently empty.</h1>
+          <p>Explore the latest arrivals and add a piece to continue your ALI LUXE shopping experience.</p>
+          <Link to="/shop" className="button-primary">Continue shopping</Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container page-shell cart-page">
@@ -18,24 +26,35 @@ function CartPage() {
       </div>
       <div className="cart-layout">
         <div className="cart-list">
-          {cartItems.map((item) => (
-            <div key={item.id} className="cart-item">
-              <img src={item.image} alt={item.name} />
-              <div className="cart-item__details">
-                <h3>{item.name}</h3>
-                <p>Qty {item.qty}</p>
-                <button type="button">Remove</button>
+          {cartItems.map((item) => {
+            const itemKey = getCartItemIdentifier(item)
+            return (
+              <div key={itemKey} className="cart-item">
+                <img src={item.image} alt={item.name} />
+                <div className="cart-item__details">
+                  <h3>{item.name}</h3>
+                  <p>{item.variant || 'Default'} • {item.options?.size || 'One size'} • {item.options?.color || 'Default'}</p>
+                  <p>{formatCurrency(item.price, selectedCurrency)} each</p>
+                  <div className="quantity-controls" aria-label={`Quantity for ${item.name}`}>
+                    <button type="button" onClick={() => updateQuantity(itemKey, Number(item.quantity) - 1)} aria-label={`Decrease quantity for ${item.name}`}>−</button>
+                    <span>{item.quantity}</span>
+                    <button type="button" onClick={() => updateQuantity(itemKey, Number(item.quantity) + 1)} aria-label={`Increase quantity for ${item.name}`}>+</button>
+                  </div>
+                  <button type="button" className="remove-link" onClick={() => removeItem(itemKey)}>Remove</button>
+                </div>
+                <strong>{formatCurrency(Number(item.price) * Number(item.quantity), selectedCurrency)}</strong>
               </div>
-              <strong>${item.price}</strong>
-            </div>
-          ))}
+            )
+          })}
         </div>
         <aside className="summary-box">
           <h3>Order summary</h3>
-          <div className="summary-row"><span>Subtotal</span><strong>${subtotal}</strong></div>
-          <div className="summary-row"><span>Shipping</span><strong>${shipping}</strong></div>
-          <div className="summary-row total"><span>Total</span><strong>${total}</strong></div>
-          <Link to="/checkout" className="button-primary button-block">Checkout</Link>
+          <div className="summary-row"><span>Subtotal</span><strong>{formatCurrency(totals.rawSubtotal, selectedCurrency)}</strong></div>
+          <div className="summary-row"><span>Shipping</span><strong>{formatCurrency(totals.rawShipping, selectedCurrency)}</strong></div>
+          <div className="summary-row"><span>Tax</span><strong>{formatCurrency(totals.rawTax, selectedCurrency)}</strong></div>
+          <div className="summary-row"><span>Discount</span><strong>- {formatCurrency(totals.rawDiscount, selectedCurrency)}</strong></div>
+          <div className="summary-row total"><span>Total</span><strong>{formatCurrency(totals.rawTotal, selectedCurrency)}</strong></div>
+          <Link to="/checkout" className="button-primary button-block">Proceed to checkout</Link>
           <Link to="/shop" className="button-secondary button-block">Continue shopping</Link>
         </aside>
       </div>

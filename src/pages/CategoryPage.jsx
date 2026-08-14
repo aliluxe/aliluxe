@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
+import AddToCartButton from '../components/AddToCartButton'
 import { categories, products } from '../data/products'
+import { formatCurrency } from '../utils/cart'
+import { useCart } from '../context/CartContext'
 
 function CategoryPage({ category }) {
+  const { selectedCurrency } = useCart()
   const categoryData = categories.find((item) => item.slug === category)
   const categoryProducts = products.filter((product) => product.category === category)
 
@@ -35,8 +39,8 @@ function CategoryPage({ category }) {
               <h3>{product.name}</h3>
               <p>{product.shortDescription}</p>
               <div className="product-card__bottom">
-                <strong>${product.price}</strong>
-                <button type="button" className="mini-button">Add to cart</button>
+                <strong>{formatCurrency(product.price, selectedCurrency)}</strong>
+                <AddToCartButton product={product} className="mini-button">Add to cart</AddToCartButton>
               </div>
             </div>
           </article>

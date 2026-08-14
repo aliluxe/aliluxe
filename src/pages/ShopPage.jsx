@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom'
+import AddToCartButton from '../components/AddToCartButton'
 import { products, categories } from '../data/products'
+import { formatCurrency } from '../utils/cart'
+import { useCart } from '../context/CartContext'
 
 function ShopPage() {
+  const { selectedCurrency } = useCart()
+
   return (
     <div className="container page-shell">
       <div className="page-header">
@@ -50,8 +55,8 @@ function ShopPage() {
                   <h3>{product.name}</h3>
                   <p>{product.shortDescription}</p>
                   <div className="product-card__bottom">
-                    <strong>${product.price}</strong>
-                    <button type="button" className="mini-button">Add to cart</button>
+                    <strong>{formatCurrency(product.price, selectedCurrency)}</strong>
+                    <AddToCartButton product={product} className="mini-button">Add to cart</AddToCartButton>
                   </div>
                 </div>
               </article>

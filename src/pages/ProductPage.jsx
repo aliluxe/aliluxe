@@ -1,8 +1,16 @@
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import { useState } from 'react'
+import AddToCartButton from '../components/AddToCartButton'
+import { formatCurrency } from '../utils/cart'
+import { useCart } from '../context/CartContext'
 
 function ProductPage({ products, categories, collections }) {
   const { slug } = useParams()
+  const { selectedCurrency } = useCart()
+  const [quantity, setQuantity] = useState(1)
+  const [selectedSize, setSelectedSize] = useState('M')
+  const [selectedColor, setSelectedColor] = useState('Black')
   const product = products.find((item) => item.slug === slug)
 
   if (!product) {
@@ -46,7 +54,7 @@ function ProductPage({ products, categories, collections }) {
             <small>{product.rating} / 5</small>
           </div>
           <div className="price-row">
-            <strong>${product.price}</strong>
+            <strong>{formatCurrency(product.price, selectedCurrency)}</strong>
             <span>Free shipping on orders over $150</span>
           </div>
           <p className="product-description">{product.description}</p>
@@ -55,18 +63,25 @@ function ProductPage({ products, categories, collections }) {
             <div>
               <label>Size</label>
               <div className="chip-group">
-                <button type="button">XS</button>
-                <button type="button">S</button>
-                <button type="button" className="active">M</button>
-                <button type="button">L</button>
+                {['XS', 'S', 'M', 'L'].map((size) => (
+                  <button key={size} type="button" className={selectedSize === size ? 'active' : ''} onClick={() => setSelectedSize(size)}>
+                    {size}
+                  </button>
+                ))}
               </div>
             </div>
             <div>
               <label>Color</label>
               <div className="chip-group">
-                <button type="button" className="swatch swatch--black active" aria-label="Black" />
-                <button type="button" className="swatch swatch--gold" aria-label="Gold" />
-                <button type="button" className="swatch swatch--ivory" aria-label="Ivory" />
+                {['Black', 'Gold', 'Ivory'].map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    className={selectedColor === color ? `swatch swatch--${color.toLowerCase()} active` : `swatch swatch--${color.toLowerCase()}`}
+                    aria-label={color}
+                    onClick={() => setSelectedColor(color)}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -74,10 +89,18 @@ function ProductPage({ products, categories, collections }) {
           <div className="purchase-row">
             <label className="qty-box">
               Qty
-              <input type="number" defaultValue="1" min="1" />
+              <input type="number" value={quantity} min="1" onChange={(event) => setQuantity(Math.max(1, Number(event.target.value) || 1))} />
             </label>
-            <button type="button" className="button-primary">Add to cart</button>
-            <button type="button" className="button-secondary">Buy now</button>
+            <AddToCartButton
+              product={product}
+              quantity={quantity}
+              variant={{ name: selectedSize }}
+              options={{ size: selectedSize, color: selectedColor }}
+              className="button-primary"
+            >
+              Add to cart
+            </AddToCartButton>
+            <Link to="/checkout" className="button-secondary">Buy now</Link>
           </div>
 
           <div className="secondary-actions">
@@ -131,8 +154,8 @@ function ProductPage({ products, categories, collections }) {
                 <h3>{item.name}</h3>
                 <p>{item.shortDescription}</p>
                 <div className="product-card__bottom">
-                  <strong>${item.price}</strong>
-                  <button type="button" className="mini-button">Add to cart</button>
+                  <strong>{formatCurrency(item.price, selectedCurrency)}</strong>
+                  <AddToCartButton product={item} className="mini-button">Add to cart</AddToCartButton>
                 </div>
               </div>
             </article>

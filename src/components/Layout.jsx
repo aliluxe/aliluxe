@@ -1,4 +1,6 @@
 import { Outlet, NavLink, Link } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
+import { supportedCurrencies } from '../utils/cart'
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -13,6 +15,7 @@ const navItems = [
 
 function Layout() {
   const logoSrc = `${import.meta.env.BASE_URL}logo.png`
+  const { itemCount, selectedCurrency, setSelectedCurrency } = useCart()
 
   return (
     <div className="site-shell">
@@ -23,7 +26,7 @@ function Layout() {
             <a href="/shop">Search</a>
             <a href="/account">Account</a>
             <a href="/wishlist">Wishlist</a>
-            <a href="/cart">Cart (0)</a>
+            <Link to="/cart">Cart ({itemCount})</Link>
           </div>
         </div>
       </header>
@@ -43,7 +46,14 @@ function Layout() {
           <button type="button" className="icon-button" aria-label="Search">⌕</button>
           <Link to="/account" className="icon-button" aria-label="Account">◌</Link>
           <Link to="/wishlist" className="icon-button" aria-label="Wishlist">♡</Link>
-          <Link to="/cart" className="icon-button cart-pill" aria-label="Cart">Bag (0)</Link>
+          <Link to="/cart" className="icon-button cart-pill" aria-label="Cart">Bag ({itemCount})</Link>
+          <label className="currency-picker" aria-label="Select currency">
+            <select value={selectedCurrency} onChange={(event) => setSelectedCurrency(event.target.value)}>
+              {supportedCurrencies.map((currency) => (
+                <option key={currency.code} value={currency.code}>{currency.code}</option>
+              ))}
+            </select>
+          </label>
         </div>
       </nav>
 
